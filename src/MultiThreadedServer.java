@@ -42,22 +42,30 @@ public class MultiThreadedServer implements Runnable {
             wt.write(parser.toHTTPString());
             wt.flush();
             
-            /* read response with ByteArrayOutputStream since it might contain binary strings */
-            DataInputStream respReader=new DataInputStream(s.getInputStream());
-            int bytesRead=0;
-            while(true){
-                /* this byte array can hold 2MB of data...is it good enough? what if we need more? */
-                byte[] b=new byte[2097152];
-                bytesRead=bytesRead+respReader.read(b);
-                byte[] b_small=new byte[bytesRead];
-                for(int i=0; i<bytesRead ; i++){
-                    b_small[i]=b[i];
+            /* read reponse headers with BufferedReader and binary content with InputStream */
+            BufferedReader serverReader=new BufferedReader(new InputStreamReader(s.getInputStream()));
+            String line2=null, mess2="";
+            while((line2=serverReader.readLine())!=null){
+                if(line2.equals("")){
+                    /* finished reading reponse headers */
+                    break;
                 }
-                /* derefence byte[] b and run the garbage collector */
-                b=null;
-                System.gc();
                 
-                HTTPResponse reponse=new HTTPResponse(b_small);
+                else{
+                    mess2=mess2+"\n";
+                }
+                
+                /* parse response headers to find 'Content-Length' */
+                HTTPParser p=new HTTPParser(mess2);
+                String length=p.returnHeaderValue("Content-Length");
+                int contentLength=Integer.parseInt(length);
+                
+                /* read binary content */
+                InputStream binaryReader=s.getInputStream();
+                byte[] b=new byte[contentLength];
+                binaryReader.read(b);
+                
+                HTTPResponse response=new HTTPResponse(mess2, b);
             }
             
         } catch (Exception e) {
