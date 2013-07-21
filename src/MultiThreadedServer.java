@@ -22,6 +22,8 @@ public class MultiThreadedServer implements Runnable {
           clientReader.read(bytesReadFromClient);
           clientReader.close();
           
+          /* parse the request */
+          System.out.println(new String(bytesReadFromClient));
           HTTPParser parse=new HTTPParser(new String(bytesReadFromClient));
       }
       catch (Exception e) {
