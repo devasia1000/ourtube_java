@@ -15,7 +15,7 @@ public class Main {
         while (true) {
             Socket sock = ssock.accept();
             System.out.println("Connected");
-            new Thread(new MultiThreadServer(sock)).start();
+            new Thread(new MultiThreadedServer(sock)).start();
         }
     }
 }
