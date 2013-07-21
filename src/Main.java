@@ -15,7 +15,6 @@ public class Main {
         System.out.println("Listening on port "+port);
         while (true) {
             Socket sock = ssock.accept();
-            System.out.println("Connected");
             new Thread(new MultiThreadedServer(sock)).start();
         }
     }
