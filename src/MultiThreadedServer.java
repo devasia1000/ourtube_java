@@ -14,8 +14,8 @@ public class MultiThreadedServer implements Runnable {
 
     @Override
     public void run() {
-        try {
-            /* open input stream and read all the bytes */
+        try {            
+            /* open client input stream and read all the bytes */
             BufferedReader rd=new BufferedReader(new InputStreamReader(sock.getInputStream()));
             String line=null, mess="";
             while((line=rd.readLine())!=null){
@@ -40,29 +40,19 @@ public class MultiThreadedServer implements Runnable {
             wt.write(parser.toHTTPString());
             wt.flush();
 
-            /* read reponse headers with BufferedReader and binary content with InputStream */
-            BufferedReader serverReader = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            String line2 = null, mess2 = "";
-            while ((line2 = serverReader.readLine()) != null) {
-                if (line2.equals("")) {
-                    /* finished reading reponse headers */
-                    break;
-                } else {
-                    mess2 = mess2 + line2 + "\n";
-                }
-            }
-
-            /* parse response headers to find 'Content-Length' */
-            HTTPParser p = new HTTPParser(mess2);
-            String length = p.returnHeaderValue("Content-Length");
-            int contentLength = Integer.parseInt(length);
-            
-            /* read binary content */
+            /* read response as a stream of bytes with InputStream */
             InputStream binaryReader = s.getInputStream();
-            byte[] b = new byte[contentLength];
-            binaryReader.read(b);
-
-            HTTPResponse response = new HTTPResponse(mess2, b);
+            /* we're using a 1MB byte array to store data...will that be enough? what is we need to store more data? */
+            byte[] data=new byte[1048576];
+            int dataRead=binaryReader.read(data);
+            /* move binary data into smaller byte array */
+            byte[] data_small=new byte[dataRead];
+            System.arraycopy(data, 0, data_small, 0, dataRead);
+            /* mark larger byte array for garbage collection */
+            data=null;
+            
+            /* parse HTTP response and store in an object */
+            HTTPResponse response = new HTTPResponse(data_small);
             byte[] totalData = response.toHTTPBytes();
 
             /* write response to client */
