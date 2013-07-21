@@ -23,12 +23,14 @@ public class MultiThreadedServer implements Runnable {
                 if(line.equals("")){
                     break;
                 }
-                
                 else{
                     mess=mess+line+"\n";
                 }
             }
 
+            /* parse HTTPRequest */
+            HTTPParser parser=new HTTPParser(mess);
+            System.out.print(parser.toHTTPString());
             
         } catch (Exception e) {
             e.printStackTrace();

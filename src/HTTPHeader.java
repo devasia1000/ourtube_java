@@ -5,8 +5,8 @@
  */
 public class HTTPHeader {
 
-    String headerName;
-    String value;
+    private String headerName;
+    private String value;
     
     HTTPHeader(String head){
         String[] temp=head.split(":");

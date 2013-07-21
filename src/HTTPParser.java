@@ -7,8 +7,8 @@ import java.util.*;
 
 public class HTTPParser {
     
-    String header_line;
-    ArrayList<HTTPHeader> headerList=new ArrayList<HTTPHeader>();
+    private String header_line;
+    private ArrayList<HTTPHeader> headerList=new ArrayList<HTTPHeader>();
 
     public HTTPParser(String mess) {
         String[] sp=mess.split("\n");
@@ -31,5 +31,15 @@ public class HTTPParser {
     public String returnURL(){
         String[] temp=header_line.split(" ");
         return temp[1];
+    }
+    
+    public String toHTTPString(){
+        String mess="";
+        mess=mess+header_line+"\r\n";
+        for(HTTPHeader head : headerList){
+            mess=mess+head.returnHeaderName()+" : "+head.returnHeaderValue()+"\r\n";
+        }
+        mess=mess+"\r\n";
+        return mess;
     }
 }
