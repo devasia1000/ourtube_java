@@ -32,6 +32,19 @@ public class MultiThreadedServer implements Runnable {
             HTTPParser parser=new HTTPParser(mess);
             System.out.print(parser.toHTTPString());
             
+            /* open socket to server and make request 
+             * 
+             * IMPORTANT: changed host to google.com to prevent redirect loop, 
+             * change back to 'parser.returnHost()' after tests*/
+            //Socket s=new Socket(parser.returnHost(), 80);
+            Socket s=new Socket("google.com", 80);
+            BufferedWriter wt=new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+            wt.write(parser.toHTTPString());
+            wt.flush();
+            
+            /* read response with ByteArrayOutputStream since it might contain binary strings */
+            
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
