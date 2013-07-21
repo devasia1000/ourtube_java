@@ -29,7 +29,7 @@ public class MultiThreadedServer implements Runnable {
 
             /* parse HTTPRequest */
             HTTPParser parser=new HTTPParser(mess);
-            System.out.print(parser.toHTTPString());
+            //System.out.print(parser.toHTTPString());
             
             /* open socket to server and make request 
              * 
@@ -47,24 +47,32 @@ public class MultiThreadedServer implements Runnable {
             while ((line2 = serverReader.readLine()) != null) {
                 if (line2.equals("")) {
                     /* finished reading reponse headers */
+                    System.out.println("breaking");
                     break;
                 } else {
                     mess2 = mess2 + line2 + "\n";
-                    System.out.println(line2);
                 }
-
-                System.out.println(mess2);
             }
 
+            System.out.println("outside loop");
             /* parse response headers to find 'Content-Length' */
             HTTPParser p = new HTTPParser(mess2);
             String length = p.returnHeaderValue("Content-Length");
             int contentLength = Integer.parseInt(length);
 
+            System.out.println("content-length: "+contentLength);
+            
             /* read binary content */
             InputStream binaryReader = s.getInputStream();
+            
+            System.out.println("retrieved input stream");
+            
             byte[] b = new byte[contentLength];
+            
+            /* ERROR: This function blocks forever!! */
             binaryReader.read(b);
+            
+            System.out.println("read binary data: "+new String(b));
 
             HTTPResponse response = new HTTPResponse(mess2, b);
             byte[] totalData = response.toHTTPBytes();
@@ -73,6 +81,8 @@ public class MultiThreadedServer implements Runnable {
             DataOutputStream os = new DataOutputStream(sock.getOutputStream());
             os.write(totalData);
             os.flush();
+            
+            System.out.println(new String(totalData));
 
         } catch (Exception e) {
             e.printStackTrace();
