@@ -1,3 +1,4 @@
+
 /**
  *
  * @author Devasia
@@ -13,19 +14,24 @@ public class HTTPResponse {
     private byte[] totalBinaryData;
     private int binaryDataStartPosition;
 
-    public HTTPResponse(byte[] b) {
+    public HTTPResponse(byte[] b) throws Exception {
         totalBinaryData = b;
         boolean responseDataAvailable = true;
 
         for (int i = 0; i < b.length; i++) {
+            /* check for \r\n\r\n - this signified end of headers and start of response body */
             if (b[i] == 13 && b[i + 1] == 10 && b[i + 2] == 13 && b[i + 3] == 10) {
                 System.out.println("found end of headers");
                 binaryDataStartPosition = i + 4;
-
-                if (binaryDataStartPosition >= b.length - 1) {
-                    responseDataAvailable = false;
-                }
+                break;
             }
+        }
+
+        if (binaryDataStartPosition == b.length) {
+            responseDataAvailable = false;
+        } else if (binaryDataStartPosition > b.length) {
+            System.err.println("error encountered while parsing bytes from response");
+            throw new Exception();
         }
 
         if (responseDataAvailable) {
