@@ -37,43 +37,44 @@ public class MultiThreadedServer implements Runnable {
              * IMPORTANT: changed host to usatoday.com to prevent redirect loop, 
              * change back to 'parser.returnHost()' after tests*/
             //Socket s=new Socket(parser.returnHost(), 80);
-            Socket s=new Socket("usatoday.com", 80);
-            BufferedWriter wt=new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+            Socket s = new Socket("usatoday.com", 80);
+            BufferedWriter wt = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
             wt.write(parser.toHTTPString());
             wt.flush();
-            
+
             /* read reponse headers with BufferedReader and binary content with InputStream */
-            BufferedReader serverReader=new BufferedReader(new InputStreamReader(s.getInputStream()));
-            String line2=null, mess2="";
-            while((line2=serverReader.readLine())!=null){
-                if(line2.equals("")){
+            BufferedReader serverReader = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            String line2 = null, mess2 = "";
+            while ((line2 = serverReader.readLine()) != null) {
+                if (line2.equals("")) {
                     /* finished reading reponse headers */
                     break;
+                } else {
+                    mess2 = mess2 + line2 + "\n";
+                    System.out.println(line2);
                 }
-                
-                else{
-                    mess2=mess2+line+"\n";
-                }
-                
-                /* parse response headers to find 'Content-Length' */
-                HTTPParser p=new HTTPParser(mess2);
-                String length=p.returnHeaderValue("Content-Length");
-                int contentLength=Integer.parseInt(length);
-                
-                /* read binary content */
-                InputStream binaryReader=s.getInputStream();
-                byte[] b=new byte[contentLength];
-                binaryReader.read(b);
-                
-                HTTPResponse response=new HTTPResponse(mess2, b);
-                byte[] totalData=response.toHTTPBytes();
-                
-                /* write response to client */
-                DataOutputStream os=new DataOutputStream(sock.getOutputStream());
-                os.write(totalData);
-                os.flush();
+
+                System.out.println(mess2);
             }
-            
+
+            /* parse response headers to find 'Content-Length' */
+            HTTPParser p = new HTTPParser(mess2);
+            String length = p.returnHeaderValue("Content-Length");
+            int contentLength = Integer.parseInt(length);
+
+            /* read binary content */
+            InputStream binaryReader = s.getInputStream();
+            byte[] b = new byte[contentLength];
+            binaryReader.read(b);
+
+            HTTPResponse response = new HTTPResponse(mess2, b);
+            byte[] totalData = response.toHTTPBytes();
+
+            /* write response to client */
+            DataOutputStream os = new DataOutputStream(sock.getOutputStream());
+            os.write(totalData);
+            os.flush();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
