@@ -34,7 +34,7 @@ public class MultiThreadedServer implements Runnable {
             
             /* open socket to server and make request 
              * 
-             * IMPORTANT: changed host to google.com to prevent redirect loop, 
+             * IMPORTANT: changed host to usatoday.com to prevent redirect loop, 
              * change back to 'parser.returnHost()' after tests*/
             //Socket s=new Socket(parser.returnHost(), 80);
             Socket s=new Socket("usatoday.com", 80);
@@ -66,6 +66,12 @@ public class MultiThreadedServer implements Runnable {
                 binaryReader.read(b);
                 
                 HTTPResponse response=new HTTPResponse(mess2, b);
+                byte[] totalData=response.toHTTPBytes();
+                
+                /* write response to client */
+                DataOutputStream os=new DataOutputStream(sock.getOutputStream());
+                os.write(totalData);
+                os.flush();
             }
             
         } catch (Exception e) {
