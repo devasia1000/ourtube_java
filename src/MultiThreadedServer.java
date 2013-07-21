@@ -17,24 +17,19 @@ public class MultiThreadedServer implements Runnable {
     public void run() {
         try {
             /* open input stream and read all the bytes */
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-            InputStream is=sock.getInputStream();
-            
-            byte[] buf = new byte[4096];
-            while (true) {
-                int n = is.read(buf);
-                if (n < 0) {
+            BufferedReader rd=new BufferedReader(new InputStreamReader(sock.getInputStream()));
+            String line=null, mess="";
+            while((line=rd.readLine())!=null){
+                if(line.equals("")){
                     break;
                 }
-                baos.write(buf, 0, n);
+                
+                else{
+                    mess=mess+line+"\n";
+                }
             }
 
-            byte data[] = baos.toByteArray();
-
-            /* parse the request */
-            System.out.println(new String(data));
-            HTTPParser parse = new HTTPParser(new String(data));
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
