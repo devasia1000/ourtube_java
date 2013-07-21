@@ -7,11 +7,26 @@ import java.util.*;
 public class HTTPResponse {
 
     private HTTPParser parser;
-    private byte[] binaryData;
+    
+    private byte[] headers;
+    private byte[] data;
+    private byte[] totalBinaryData;
+    private int binaryDataStartPosition;
 
-    public HTTPResponse(String mess, byte[] b) {
-        parser = new HTTPParser(mess);
-        binaryData = b;
+    public HTTPResponse(byte[] b) {
+        totalBinaryData = b;
+
+        for (int i = 0; i < b.length; i++) {
+            if (b[i] == 13 && b[i+1]==10 && b[i+2]==13 && b[i+3]==10) {
+                System.out.println("found end of headers");
+                binaryDataStartPosition = i + 4;
+            }
+        }
+
+        headers = Arrays.copyOfRange(b, 0, binaryDataStartPosition - 1);
+        data = Arrays.copyOfRange(b, binaryDataStartPosition, b.length);
+        
+        parser=new HTTPParser(new String(headers));
     }
 
     public HTTPParser returnParser() {
@@ -19,13 +34,6 @@ public class HTTPResponse {
     }
 
     public byte[] toHTTPBytes() {
-        byte[] one = parser.toHTTPString().getBytes();
-        byte[] two = binaryData;
-        byte[] combined = new byte[one.length + two.length];
-
-        System.arraycopy(one, 0, combined, 0, one.length);
-        System.arraycopy(two, 0, combined, one.length, two.length);
-        
-        return combined;
+        return totalBinaryData;
     }
 }
