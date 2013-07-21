@@ -58,4 +58,15 @@ public class HTTPParser {
         mess=mess+"\r\n";
         return mess;
     }
+    
+    public String toHTTPStringWithConnectionCloseHeader(){
+        String mess="";
+        mess=mess+header_line+"\r\n";
+        for(HTTPHeader head : headerList){
+            mess=mess+head.returnHeaderName()+" : "+head.returnHeaderValue()+"\r\n";
+        }
+        mess=mess+"Connection : close\r\n";
+        mess=mess+"\r\n";
+        return mess;
+    }
 }
