@@ -29,8 +29,20 @@ public class HTTPParser {
     }
     
     public String returnURL(){
+        String url="";
+        
+        for(HTTPHeader head : headerList){
+            if(head.returnHeaderName().toLowerCase().equals("host")){
+                url=url+head.returnHeaderValue();
+            }
+        }
+        
         String[] temp=header_line.split(" ");
-        return temp[1];
+        String uri=temp[1];
+        
+        url=url+uri;
+        
+        return url;
     }
     
     public String toHTTPString(){
