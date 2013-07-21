@@ -24,6 +24,16 @@ public class HTTPParser {
         return header_line;
     }
     
+    public String returnHeaderValue(String key){
+        String h="";
+        for(HTTPHeader head : headerList){
+            if(head.returnHeaderName().toLowerCase().equals(key.toLowerCase())){
+                h=head.returnHeaderValue();
+            }
+        }
+        return h;
+    }
+    
     public ArrayList<HTTPHeader> returnHeaders(){
         return headerList;
     }
