@@ -34,8 +34,8 @@ public class MultiThreadedServer implements Runnable {
              * 
              * IMPORTANT: changed host to usatoday.com to prevent redirect loop, 
              * change back to 'parser.returnHost()' after tests*/
-            //Socket s=new Socket(parser.returnHost(), 80);
-            Socket s = new Socket("usatoday.com", 80);
+            Socket s=new Socket(parser.returnHost(), 80);
+            //Socket s = new Socket("usatoday.com", 80);
             BufferedWriter wt = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
             wt.write(parser.toHTTPString());
             wt.flush();
