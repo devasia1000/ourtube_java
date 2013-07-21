@@ -28,20 +28,14 @@ public class HTTPParser {
         return headerList;
     }
     
-    public String returnURL(){
+    public String returnHost(){
         String url="";
         
         for(HTTPHeader head : headerList){
             if(head.returnHeaderName().toLowerCase().equals("host")){
-                url=url+head.returnHeaderValue();
+                url=head.returnHeaderValue();
             }
         }
-        
-        String[] temp=header_line.split(" ");
-        String uri=temp[1];
-        
-        url=url+uri;
-        
         return url;
     }
     
