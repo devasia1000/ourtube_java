@@ -52,7 +52,7 @@ public class MultiThreadedServer implements Runnable {
                 }
                 
                 else{
-                    mess2=mess2+"\n";
+                    mess2=mess2+line+"\n";
                 }
                 
                 /* parse response headers to find 'Content-Length' */
