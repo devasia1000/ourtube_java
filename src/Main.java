@@ -12,7 +12,6 @@ public class Main {
 
     public static void main(String args[]) throws Exception {
         ServerSocket ssock = new ServerSocket(port);
-        System.out.println("Listening on port "+port);
         while (true) {
             Socket sock = ssock.accept();
             new Thread(new MultiThreadedServer(sock)).start();
