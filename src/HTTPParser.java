@@ -11,11 +11,12 @@ public class HTTPParser {
     ArrayList<HTTPHeader> headerList=new ArrayList<HTTPHeader>();
 
     public HTTPParser(String mess) {
-        String[] sp=mess.split("\r\n");
+        String[] sp=mess.split("\n");
         header_line=sp[0];
         
-        for(int i=1;i<sp.length-1;i++){
+        for(int i=1;i<sp.length;i++){
             HTTPHeader head=new HTTPHeader(sp[i]);
+            headerList.add(head);
         }
     }
     
@@ -24,10 +25,11 @@ public class HTTPParser {
     }
     
     public ArrayList<HTTPHeader> returnHeaders(){
-        return null;
+        return headerList;
     }
     
     public String returnURL(){
-        return null;
+        String[] temp=header_line.split(" ");
+        return temp[1];
     }
 }
