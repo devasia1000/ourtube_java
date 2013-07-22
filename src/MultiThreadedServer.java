@@ -27,18 +27,23 @@ public class MultiThreadedServer implements Runnable {
                     mess=mess+line+"\n";
                 }
             }
+            
+            if(mess==null){
+                System.err.println("could not read any data from client");
+                throw new Exception();
+            }
 
             /* parse HTTPRequest */
-            HTTPParser parser=new HTTPParser(mess);
+            HTTPRequest request=new HTTPRequest(mess);
             
             /* open socket to server and make request 
              * 
              * IMPORTANT: changed host to usatoday.com to prevent redirect loop, 
              * change back to 'parser.returnHost()' after tests*/
-            Socket s=new Socket(parser.returnHost(), 80);
+            Socket s=new Socket(request.returnParser().returnHost(), 80);
             //Socket s = new Socket("4.53.56.89", 80);
             BufferedWriter wt = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
-            wt.write(parser.toHTTPString());
+            wt.write(request.returnParser().toHTTPString());
             wt.flush();
 
             /* read response as a stream of bytes with InputStream */
@@ -49,7 +54,7 @@ public class MultiThreadedServer implements Runnable {
             //System.out.print(new String(data));
             /* throw an exception if no response is read from server */
             if(dataRead==0){
-                System.err.println("no response read from server");
+                System.err.println("could not read any data from server");
                 throw new Exception();
             }
             /* move binary data into smaller byte array */

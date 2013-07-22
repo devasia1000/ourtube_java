@@ -65,6 +65,7 @@ public class HTTPParser {
         for(HTTPHeader head : headerList){
             mess=mess+head.returnHeaderName()+" : "+head.returnHeaderValue()+"\r\n";
         }
+        /* append 'Connection : close' header */
         mess=mess+"Connection : close\r\n";
         mess=mess+"\r\n";
         return mess;

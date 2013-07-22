@@ -50,4 +50,8 @@ public class HTTPResponse {
     public byte[] toHTTPBytes() {
         return totalBinaryData;
     }
+    
+    public byte[] returnData(){
+        return data;
+    }
 }
