@@ -47,10 +47,14 @@ public class HTTPParser {
             }
         }
         
-        if(url==null){
+        if(url==null){    
             System.err.println("could not parse host from header");
             throw new Exception();
         }
+        
+        /* remove whitespace and newlines */
+        url=url.trim();
+        url=url.replaceAll("\n", "");
         
         return url;
     }
