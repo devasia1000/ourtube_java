@@ -38,14 +38,20 @@ public class HTTPParser {
         return headerList;
     }
     
-    public String returnHost(){
-        String url="";
+    public String returnHost() throws Exception{
+        String url=null;
         
         for(HTTPHeader head : headerList){
             if(head.returnHeaderName().toLowerCase().equals("host")){
                 url=head.returnHeaderValue();
             }
         }
+        
+        if(url==null){
+            System.err.println("could not parse host from header");
+            throw new Exception();
+        }
+        
         return url;
     }
     
