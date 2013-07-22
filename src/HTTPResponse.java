@@ -21,7 +21,6 @@ public class HTTPResponse {
         for (int i = 0; i < b.length; i++) {
             /* check for \r\n\r\n - this signified end of headers and start of response body */
             if (b[i] == 13 && b[i + 1] == 10 && b[i + 2] == 13 && b[i + 3] == 10) {
-                System.out.println("found end of headers");
                 binaryDataStartPosition = i + 4;
                 break;
             }
